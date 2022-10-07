@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import * as styles from '../styles/score.module.scss';
+
 function Score(props) {
 
     const [uniName, setUniName] = useState(props.uniName);
@@ -16,9 +18,9 @@ function Score(props) {
     if (uniName == null || score == null) { return }
 
     return (
-        <div className={ [""].join(' ') }>
-            <h2>{ uniName }</h2>
-            <h2>{ score }</h2>
+        <div className={ [styles.scoreWrapper].join(' ') }>
+            <h2 className={ [styles.uniName].join(' ') }>{ uniName }</h2>
+            <h2 className={ [styles.score].join(' ') }>{ score }</h2>
         </div>
     )
 }

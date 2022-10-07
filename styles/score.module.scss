@@ -1,0 +1,20 @@
+.scoreWrapper {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.uniName {
+    padding: 20px;
+
+    background-color: white;
+    color: black;
+
+    font-size: 5.0em;
+}
+
+.score {
+    padding: 20px;
+    font-size: 8.0em;
+}
