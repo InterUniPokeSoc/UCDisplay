@@ -103,7 +103,7 @@ export default function Panel() {
                   <select onChange={ (e) => setSelectedMatch(e.target.value) }  className="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
                     <option value={ null } defaultValue>Select Match</option>
                     { matchData.map((match, index) => {
-                        return <option value={ match.id }>{ `${ match.id } (${ match.team1.name } vs ${ match.team2.name })`  }</option>
+                        return <option key={ match.id } value={ match.id }>{ `${ match.id } (${ match.team1.name } vs ${ match.team2.name })`  }</option>
                       })
                     }
                   </select>
