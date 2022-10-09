@@ -16,6 +16,8 @@ import { fetchTeamData, fetchMatches, setCurrentMatch } from '../web/queries.js'
 export default function Panel() {
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState(false);
   const [teamData, setTeamData] = useState(null);
 
   const [matchData, setMatchData] = useState(null);
@@ -23,6 +25,8 @@ export default function Panel() {
   const [detectedChange, setDetectedChange] = useState(null);
 
   const [selectedMatch, setSelectedMatch] = useState(0);
+
+  const PASSWORD = "quagsireandpipluparebesties"
 
     /*
       On page load make an API call to Supabase
@@ -75,7 +79,17 @@ export default function Panel() {
           <Loader />
         }
 
-        { !isLoading && 
+        {/* VERY SECURE INTERFACE YAY */}
+        { !isLoading && !isAuthenticated &&
+          <form>
+            <div className="input-group mb-3">
+              <input type="password" className="form-control" placeholder="Ultra Secure Password" aria-label="Ultra Secure Password" aria-describedby="button-password" onChange={ e => { setPassword(e.target.value) } } />
+              <button className="btn btn-outline-secondary" type="button" id="button-password" onClick={ e => { if(password == PASSWORD) { setIsAuthenticated(true) } } }>Login Very Securely</button>
+            </div>
+          </form>
+        }
+
+        { !isLoading && isAuthenticated &&
           <>
             <h1 className={styles.title}>
               { teamData != null ? "University Challenge" : "Error"}
