@@ -16,7 +16,7 @@ import { fetchTeamData, fetchMatches, setCurrentMatch } from '../web/queries.js'
 export default function Panel() {
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [password, setPassword] = useState(false);
   const [teamData, setTeamData] = useState(null);
 
@@ -115,13 +115,13 @@ export default function Panel() {
             <br />
 
             { teamData != null && teamData.team1 != null &&
-              <ScoreController team={ teamData.team1 } />
+              <ScoreController matchID={ teamData.id } team={ teamData.team1 } />
             }
 
             <br />
 
             { teamData != null && teamData.team2 != null &&
-              <ScoreController team={ teamData.team2 } />
+              <ScoreController matchID={ teamData.id } team={ teamData.team2 } />
             }
           </>
         }

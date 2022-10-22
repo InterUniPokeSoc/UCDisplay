@@ -8,6 +8,8 @@ import { updateTeamScore } from '../web/queries.js'
 
 export default function ScoreController(props) {
 
+  const matchID = props.matchID
+
   const team = props.team
 
   const [transactionInProgress, setTransactionInProgress] = useState(false)
@@ -22,13 +24,17 @@ export default function ScoreController(props) {
   const INTERRUPT_QUESTION = -5
 
   useEffect(() => {
-    if (transactionInProgress || scoreModifier == null || team.id == null) { return }
+    if (transactionInProgress || scoreModifier == null || team.id == null || matchID == null) { return }
 
     setTransactionInProgress(true)
     setTransactionErrorOccurred(false)
 
-    updateTeamScore(team.id, scoreModifier).then((hasSuccessfullyCompleted) => {
+    console.log("MATCH ID = "+matchID)
+    console.log("FOR TEAM: "+team.id)
+    console.log("SCORE MODIFIER = "+scoreModifier)
 
+    updateTeamScore(matchID, team.id, scoreModifier).then((hasSuccessfullyCompleted) => {
+      console.log("HAS SUCCESSFULLY COMPLETED? "+hasSuccessfullyCompleted)
     }).catch((e) => {
       console.log(e)
       setTransactionErrorOccurred(true)
