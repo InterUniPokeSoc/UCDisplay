@@ -16,7 +16,7 @@ import { fetchTeamData, fetchMatches, setCurrentMatch } from '../web/queries.js'
 export default function Panel() {
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState(false);
   const [teamData, setTeamData] = useState(null);
 
