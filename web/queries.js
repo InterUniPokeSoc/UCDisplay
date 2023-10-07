@@ -86,8 +86,6 @@ async function setCurrentMatch(matchID) {
 }
 
 async function updateTeamScore(matchID, teamID, value) {
-  console.log("HELLO")
-
   const { data: data, error: error } = await supabase
     .from('score')
     .update({ score: value })
@@ -100,4 +98,63 @@ async function updateTeamScore(matchID, teamID, value) {
   return true
 }
 
-export { fetchTeamData, fetchMatches, setCurrentMatch, updateTeamScore };
+async function fetchImageToPresent() {
+  const { data: data, error: error } = await supabase
+    .from('images')
+    .select('*')
+    .eq('is_presenting', true)
+
+  if (data == null || data[0] == null || data[0].url == null) { return false }
+
+  return data[0]
+}
+
+async function fetchAllImagesInMatch(matchID) {
+  console.log("FETCHING ALL IMAGES IN MATCH = "+matchID)
+
+  const { data: data, error: error } = await supabase
+    .from('images')
+    .select('*')
+    .eq('match_id', matchID)
+    .order('placement')
+
+  if (data == null || data[0] == null) { return false }
+
+  return data
+}
+
+async function setSelectedAndDisplayImage(imageID) {
+  if (imageID == null) { return }
+
+  console.log("PREPARING TO SET IMAGE")
+
+  const { data: data1, error: error1 } = await supabase
+    .from('images')
+    .update({ is_presenting: false })
+    .neq('id', imageID)
+    .select('*')
+
+  const { data: data2, error: error2 } = await supabase
+    .from('images')
+    .update({ is_presenting: true })
+    .eq('id', imageID)
+    .select('*')
+
+  console.log(error1)
+  console.log(error2)
+}
+
+async function hideImage() {
+  console.log("PREPARING TO HIDE IMAGE")
+
+  const { data: data, error: error } = await supabase
+    .from('images')
+    .update({ is_presenting: false })
+    .gte('id', 0) // where clause is required
+    .select('*')
+
+  console.log(error)
+}
+
+
+export { fetchTeamData, fetchMatches, setCurrentMatch, updateTeamScore, fetchImageToPresent, fetchAllImagesInMatch, setSelectedAndDisplayImage, hideImage };

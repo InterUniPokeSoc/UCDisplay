@@ -11,20 +11,23 @@ import 'bootstrap/dist/css/bootstrap.css'
 
 import { supabase } from '../web/supabase'
 
-import { fetchTeamData, fetchMatches, setCurrentMatch } from '../web/queries.js'
+import { fetchTeamData, fetchMatches, setCurrentMatch, fetchAllImagesInMatch, setSelectedAndDisplayImage, hideImage } from '../web/queries.js'
 
 export default function Panel() {
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [password, setPassword] = useState(false);
   const [teamData, setTeamData] = useState(null);
 
   const [matchData, setMatchData] = useState(null);
 
+  const [imageData, setImageData] = useState(null);
+
   const [detectedChange, setDetectedChange] = useState(null);
 
   const [selectedMatch, setSelectedMatch] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   const PASSWORD = "quagsireandpipluparebesties"
 
@@ -37,6 +40,14 @@ export default function Panel() {
   
       fetchTeamData().then((items) => {
         setTeamData(items)
+
+        if (items?.id != null) {
+          fetchAllImagesInMatch(items.id).then((items) => {
+            setImageData(items)
+          }).catch((e) => {
+            setImageData(null)
+          })
+        }
       }).catch((e) => {
         console.log(e)
         setTeamData(null)
@@ -123,6 +134,28 @@ export default function Panel() {
             { teamData != null && teamData.team2 != null &&
               <ScoreController matchID={ teamData.id } team={ teamData.team2 } />
             }
+            
+            <br />
+
+            <h1><span className="badge bg-primary">Image Settings</span></h1>
+
+            <form>
+              { imageData != null &&
+                <div className="input-group">
+                  <select onChange={ (e) => setSelectedImage(e.target.value) }  className="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
+                    <option value={ null } defaultValue>Select Image</option>
+                    { imageData.map((image, index) => {
+                        let imageName = image.placement == 0 ? "STARTER IMAGE" : `BONUS ${ image.placement } IMAGE`
+
+                        return <option key={ image.id } value={ image.id }>{ imageName }</option>
+                      })
+                    }
+                  </select>
+                  <button className="btn btn-outline-secondary" type="button" onClick={ e => setSelectedAndDisplayImage(selectedImage) }>Set Image And Display</button>
+                  <button className="btn btn-outline-danger" type="button" onClick={ e => hideImage() }>Hide Image</button>
+                </div>
+              }
+            </form>
           </>
         }
       </main>

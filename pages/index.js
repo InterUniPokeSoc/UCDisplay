@@ -9,12 +9,14 @@ import Score from '../components/score.js'
 
 import { supabase } from '../web/supabase'
 
-import { fetchTeamData } from '../web/queries.js'
+import { fetchImageToPresent, fetchTeamData } from '../web/queries.js'
 
 export default function Home() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [teamData, setTeamData] = useState(null);
+
+  const [imageData, setImageData] = useState(null);
 
   const [detectedChange, setDetectedChange] = useState(null);
 
@@ -22,7 +24,6 @@ export default function Home() {
     On page load make an API call to Supabase
   */
   useEffect(() => {
-
     if (detectedChange == null) { setIsLoading(true) }
 
     fetchTeamData().then((items) => {
@@ -32,6 +33,13 @@ export default function Home() {
       setTeamData(null)
     }).finally(() => {
       setIsLoading(false)
+    })
+
+    fetchImageToPresent().then((item) => {
+      setImageData(item)
+    }).catch((e) => {
+      console.log(e)
+      setImageData(null)
     })
   }, [detectedChange])
 
@@ -64,11 +72,13 @@ export default function Home() {
               { teamData != null ? "University Challenge" : "Error"}
             </h1>
 
-            { teamData != null && teamData.team1 != null &&
+            <img className={styles.mainImage} src={ imageData?.url ?? "" } />
+
+            { teamData != null && teamData.team1 != null && imageData?.url == null &&
               <Score uniName={ teamData.team1.name } score={ teamData.team1.score } />
             }
 
-            { teamData != null && teamData.team2 != null &&
+            { teamData != null && teamData.team2 != null && imageData?.url == null &&
               <Score uniName={ teamData.team2.name } score={ teamData.team2.score } />
             }
           </>
