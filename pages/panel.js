@@ -174,7 +174,7 @@ export default function Panel() {
             <h1><span className="badge bg-primary">Music Settings</span></h1>
 
             <form>
-              { imageData != null &&
+              { musicData != null &&
                 <div className="input-group">
                   <select onChange={ (e) => setSelectedMusic(e.target.value) }  className="form-select" id="inputGroupSelect04" aria-label="Example select with button addon">
                     <option value={ null } defaultValue>Select Music</option>
