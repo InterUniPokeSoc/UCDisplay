@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import Head from 'next/head'
 import Image from 'next/image'
@@ -9,17 +9,23 @@ import Score from '../components/score.js'
 
 import { supabase } from '../web/supabase'
 
-import { fetchImageToPresent, fetchTeamData } from '../web/queries.js'
+import { fetchImageToPresent, fetchMusicToPlay, fetchTeamData } from '../web/queries.js'
 
 export default function Home() {
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isStarted, setIsStarted] = useState(false);
   const [teamData, setTeamData] = useState(null);
 
   const [imageData, setImageData] = useState(null);
 
+  const [musicData, setMusicData] = useState(null);
+
+  // const [player, setPlayer] = useState(null);
+
   const [detectedChange, setDetectedChange] = useState(null);
 
+  const [player, setPlayer] = useState(null);
   /*
     On page load make an API call to Supabase
   */
@@ -41,6 +47,41 @@ export default function Home() {
       console.log(e)
       setImageData(null)
     })
+
+    fetchMusicToPlay().then((item) => {
+      setMusicData(item)
+
+      console.log("FETCHED MUSIC")
+
+      if (item != null && item != false) {
+        console.log("MUSIC SELECTED!")
+        if(player.src != item.url) { player.src = item.url }
+
+        player.volume = (item.volume / 100)
+
+        if (item.restart_music) { 
+          console.log("RESTART MUSIC!")
+          item.currentTime = 0
+          player.src = item.url
+        }
+
+        if (item.is_playing) {
+          console.log("PLAYING MUSIC!")
+          player.play()
+        } else {
+          console.log("PAUSING MUSIC!")
+          player.pause()
+        }
+      } else {
+        console.log("STOPPING MUSIC!")
+        player.pause()
+      }
+
+      console.log(item)
+    }).catch((e) => {
+      console.log(e)
+      setMusicData(null)
+    })
   }, [detectedChange])
 
   useEffect(() => {
@@ -50,6 +91,8 @@ export default function Home() {
       setDetectedChange(payload)
     })
     .subscribe()
+
+    setPlayer(new Audio())
   }, [])
 
   return (
@@ -65,8 +108,12 @@ export default function Home() {
         { isLoading &&
           <Loader />
         }
+        
+        { !isLoading && !isStarted &&
+          <button className="btn btn-outline-secondary" type="button" onClick={ () => { setIsStarted(true) } }>Start Board</button>
+        }
 
-        { !isLoading && 
+        { !isLoading && isStarted &&
           <>
             <h1 className={styles.title}>
               { teamData != null ? "University Challenge" : "Error"}

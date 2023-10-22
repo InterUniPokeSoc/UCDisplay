@@ -156,5 +156,90 @@ async function hideImage() {
   console.log(error)
 }
 
+export async function fetchMusicToPlay() {
+  const { data: data, error: error } = await supabase
+    .from('music')
+    .select('*')
+    .eq('is_selected', true)
+
+  if (data == null || data[0] == null || data[0].url == null) { return false }
+
+  return data[0]
+}
+
+export async function fetchAllMusicInMatch(matchID) {
+  console.log("FETCHING ALL MUSIC IN MATCH = "+matchID)
+
+  const { data: data, error: error } = await supabase
+    .from('music')
+    .select('*')
+    .eq('match_id', matchID)
+    .order('placement')
+
+  console.log("DATA:")
+  console.log(data)
+
+  if (data == null || data[0] == null) { return false }
+
+  return data
+}
+
+export async function setSelectedAndPlayMusic(musicID) {
+  if (musicID == null) { return }
+
+  console.log("PREPARING TO SET MUSIC")
+
+  const { data: data1, error: error1 } = await supabase
+    .from('music')
+    .update({ is_selected: false, is_playing: false, restart_music: true })
+    .neq('id', musicID)
+    .select('*')
+
+  const { data: data2, error: error2 } = await supabase
+    .from('music')
+    .update({ is_selected: true, restart_music: false })
+    .eq('id', musicID)
+    .select('*')
+
+  console.log(error1)
+  console.log(error2)
+}
+
+export async function playMusic(musicID) {
+  console.log("PREPARING TO STOP MUSIC")
+
+  const { data: data, error: error } = await supabase
+    .from('music')
+    .update({ is_playing: true, restart_music: false })
+    .eq('id', musicID)
+    .select('*')
+
+  console.log(error)
+}
+
+export async function pauseMusic(musicID) {
+  console.log("PREPARING TO STOP MUSIC")
+
+  const { data: data, error: error } = await supabase
+    .from('music')
+    .update({ is_playing: false, restart_music: false })
+    .eq('id', musicID)
+    .select('*')
+
+  console.log(error)
+}
+
+export async function stopMusic() {
+  console.log("PREPARING TO STOP MUSIC")
+
+  const { data: data, error: error } = await supabase
+    .from('music')
+    .update({ is_playing: false, restart_music: true })
+    .gte('id', 0) // where clause is required
+    .select('*')
+
+  console.log(error)
+}
+
 
 export { fetchTeamData, fetchMatches, setCurrentMatch, updateTeamScore, fetchImageToPresent, fetchAllImagesInMatch, setSelectedAndDisplayImage, hideImage };
