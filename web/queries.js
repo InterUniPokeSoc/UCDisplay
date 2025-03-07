@@ -1,8 +1,35 @@
 import { supabase } from './supabase'
 import React, { useState, useEffect } from 'react';
 
+const configError = new Error("config information is invalid")
 const teamError = new Error("team information is invalid")
 const matchError = new Error("match information is invalid")
+
+async function fetchConfig() {
+  const { data: data, error: error } = await supabase
+    .from('config')
+    .select(`
+      id,
+      board_state
+    `)
+    .order('id', { ascending: true })
+
+    if (data[0] == null) { throw configError  }
+
+    return data[0]
+}
+
+async function updateConfig(boardState) {
+  const { data: data, error: error } = await supabase
+    .from('config')
+    .update({ board_state: boardState })
+    .eq('id', 0)
+    .select('*')
+
+  if (data == null || data[0] == null || data[0].board_state == null) { return false }
+
+  return true
+}
 
 async function fetchTeamData() {
   const { data: data, error: error } = await supabase
@@ -242,4 +269,4 @@ export async function stopMusic() {
 }
 
 
-export { fetchTeamData, fetchMatches, setCurrentMatch, updateTeamScore, fetchImageToPresent, fetchAllImagesInMatch, setSelectedAndDisplayImage, hideImage };
+export { fetchConfig, updateConfig, fetchTeamData, fetchMatches, setCurrentMatch, updateTeamScore, fetchImageToPresent, fetchAllImagesInMatch, setSelectedAndDisplayImage, hideImage };

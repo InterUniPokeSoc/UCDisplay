@@ -4,6 +4,12 @@
   background-color: #03213c;
 }
 
+.container-panel {
+  padding: 0 2rem;
+
+  background-color: #efefef;
+}
+
 .main {
   min-height: 100vh;
   padding: 4rem 0;
@@ -48,6 +54,17 @@
   font-size: 4rem;
 
   background-color: #A0E5FE;
+  color: black;
+  border-radius: 30px;
+}
+
+.technicalTrouble {
+  margin: 0;
+  padding: 40px;
+  line-height: 1.15;
+  font-size: 4rem;
+
+  background-color: #fea0a0;
   color: black;
   border-radius: 30px;
 }
@@ -120,6 +137,13 @@
   max-height: 80vh;
   object-fit: contain;
   margin: 20px;
+}
+
+.mainVideo {
+  width: 99vw;
+  max-height: 99vh;
+  object-fit: contain;
+  margin: 0px;
 }
 
 @media (max-width: 600px) {

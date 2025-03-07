@@ -11,7 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 
 import { supabase } from '../web/supabase'
 
-import { fetchTeamData, fetchMatches, setCurrentMatch, fetchAllImagesInMatch, 
+import { fetchConfig, updateConfig, fetchTeamData, fetchMatches, setCurrentMatch, fetchAllImagesInMatch, 
   setSelectedAndDisplayImage, hideImage, fetchAllMusicInMatch, setSelectedAndPlayMusic, playMusic, pauseMusic, stopMusic } from '../web/queries.js'
 
 export default function Panel() {
@@ -20,6 +20,8 @@ export default function Panel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState(false);
   const [teamData, setTeamData] = useState(null);
+
+  const [boardState, setBoardState] = useState(0);
 
   const [matchData, setMatchData] = useState(null);
 
@@ -41,6 +43,12 @@ export default function Panel() {
     useEffect(() => {
 
       if (detectedChange == null) { setIsLoading(true) }
+
+      fetchConfig().then((config) => {
+        setBoardState(config.board_state)
+      }).catch((e) => {
+        setBoardState(0)
+      })
   
       fetchTeamData().then((items) => {
         setTeamData(items)
@@ -89,7 +97,7 @@ export default function Panel() {
     }, [detectedChange])
 
   return (
-    <div className={styles.container}>
+    <div className={styles.containerPanel}>
       <Head>
         <title>Pokémon University Challenge</title>
         <meta name="description" content="Pokémon University Challenge" />
@@ -114,12 +122,27 @@ export default function Panel() {
 
         { !isLoading && isAuthenticated &&
           <>
-            <h1 className={styles.title}>
-              { teamData != null ? "University Challenge" : "Error"}
-            </h1>
+            <h1><span className="badge bg-secondary">{ teamData != null ? "Control Panel" : "Error"}</span></h1>
 
             <br />
 
+            <h1><span className="badge bg-primary">Scoreboard State</span></h1>
+            <form>
+              { imageData != null &&
+                <div className="input-group">
+                  <button className="btn btn-outline-primary" type="button" onClick={ e => updateConfig(0) }>Scoreboard</button>
+                  <button className="btn btn-outline-secondary" type="button" onClick={ e => updateConfig(1) }>Intermission</button>
+                  <button className="btn btn-outline-secondary" type="button" onClick={ e => updateConfig(2) }>Get Ready</button>
+                  <button className="btn btn-outline-secondary" type="button" onClick={ e => updateConfig(3) }>Intro</button>
+                  <button className="btn btn-outline-secondary" type="button" onClick={ e => updateConfig(4) }>Logo</button>
+                  <button className="btn btn-outline-danger" type="button" onClick={ e => updateConfig(5) }>Technical Trouble</button>
+                </div>
+              }
+            </form>
+
+            <br />
+
+            <h1><span className="badge bg-primary">Match Selection</span></h1>
             <form>
               { matchData != null &&
                 <div className="input-group">
@@ -136,6 +159,8 @@ export default function Panel() {
             </form>
 
             <br />
+
+            <h1><span className="badge bg-primary">Scores</span></h1>
 
             { teamData != null && teamData.team1 != null &&
               <ScoreController matchID={ teamData.id } team={ teamData.team1 } />

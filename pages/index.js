@@ -9,12 +9,15 @@ import Score from '../components/score.js'
 
 import { supabase } from '../web/supabase'
 
-import { fetchImageToPresent, fetchMusicToPlay, fetchTeamData } from '../web/queries.js'
+import { fetchConfig, fetchImageToPresent, fetchMusicToPlay, fetchTeamData } from '../web/queries.js'
 
 export default function Home() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
+
+  const [boardState, setBoardState] = useState(0);
+
   const [teamData, setTeamData] = useState(null);
 
   const [imageData, setImageData] = useState(null);
@@ -32,12 +35,20 @@ export default function Home() {
   useEffect(() => {
     if (detectedChange == null) { setIsLoading(true) }
 
-    fetchTeamData().then((items) => {
-      setTeamData(items)
+    fetchConfig().then((config) => {
+      setBoardState(config.board_state)
+
+      fetchTeamData().then((items) => {
+        setTeamData(items)
+      }).catch((e) => {
+        console.log(e)
+        setTeamData(null)
+      }).finally(() => {
+        setIsLoading(false)
+      })
     }).catch((e) => {
       console.log(e)
-      setTeamData(null)
-    }).finally(() => {
+      setBoardState(0)
       setIsLoading(false)
     })
 
@@ -115,22 +126,52 @@ export default function Home() {
 
         { !isLoading && isStarted &&
           <>
-            { imageData?.url == null &&
+            { boardState == 0 &&
+              <>
+                { imageData?.url == null &&
+                  <h1 className={styles.title}>
+                    { teamData != null ? "Pokémon University Challenge" : "Error"}
+                  </h1>
+                }
+
+                { imageData?.url != null &&
+                  <img className={styles.mainImage} src={ imageData?.url ?? "" } />
+                }
+
+                { teamData != null && teamData.team1 != null && imageData?.url == null &&
+                  <Score uniName={ teamData.team1.name } score={ teamData.team1.score } />
+                }
+
+                { teamData != null && teamData.team2 != null && imageData?.url == null &&
+                  <Score uniName={ teamData.team2.name } score={ teamData.team2.score } />
+                }
+              </>
+            }
+
+            { boardState == 1 &&
+              <video className={styles.mainVideo} src="https://pitmslrfogqaymkyfwhd.supabase.co/storage/v1/object/public/main//puc_s2_opening.mp4"
+               type="video/mp4" muted autoPlay no-controls loop />
+            }
+
+            { boardState == 2 &&
               <h1 className={styles.title}>
-                { teamData != null ? "Pokémon University Challenge" : "Error"}
+                { "Please take your seats. We're about to begin!" }
               </h1>
             }
 
-            { imageData?.url != null &&
-              <img className={styles.mainImage} src={ imageData?.url ?? "" } />
+            { boardState == 3 &&
+              <video className={styles.mainVideo} src="https://pitmslrfogqaymkyfwhd.supabase.co/storage/v1/object/public/main//puc_s2_opening.mp4"
+               type="video/mp4" autoPlay no-controls />
             }
 
-            { teamData != null && teamData.team1 != null && imageData?.url == null &&
-              <Score uniName={ teamData.team1.name } score={ teamData.team1.score } />
+            { boardState == 4 &&
+              <img src="./title_card.png" className={styles.mainImage} />
             }
 
-            { teamData != null && teamData.team2 != null && imageData?.url == null &&
-              <Score uniName={ teamData.team2.name } score={ teamData.team2.score } />
+            { boardState == 5 &&
+              <h1 className={styles.technicalTrouble}>
+                { "We're Having Technical Trouble. Please Stand By." }
+              </h1>
             }
           </>
         }
