@@ -1,5 +1,7 @@
 .container {
   padding: 0 2rem;
+
+  background-color: #03213c;
 }
 
 .main {
@@ -41,8 +43,13 @@
 
 .title {
   margin: 0;
+  padding: 40px;
   line-height: 1.15;
   font-size: 4rem;
+
+  background-color: #A0E5FE;
+  color: black;
+  border-radius: 30px;
 }
 
 .title,

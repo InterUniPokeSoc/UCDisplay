@@ -117,7 +117,7 @@ export default function Home() {
           <>
             { imageData?.url == null &&
               <h1 className={styles.title}>
-                { teamData != null ? "University Challenge" : "Error"}
+                { teamData != null ? "Pokémon University Challenge" : "Error"}
               </h1>
             }
 
