@@ -115,11 +115,15 @@ export default function Home() {
 
         { !isLoading && isStarted &&
           <>
-            <h1 className={styles.title}>
-              { teamData != null ? "University Challenge" : "Error"}
-            </h1>
+            { imageData?.url == null &&
+              <h1 className={styles.title}>
+                { teamData != null ? "University Challenge" : "Error"}
+              </h1>
+            }
 
-            <img className={styles.mainImage} src={ imageData?.url ?? "" } />
+            { imageData?.url != null &&
+              <img className={styles.mainImage} src={ imageData?.url ?? "" } />
+            }
 
             { teamData != null && teamData.team1 != null && imageData?.url == null &&
               <Score uniName={ teamData.team1.name } score={ teamData.team1.score } />
