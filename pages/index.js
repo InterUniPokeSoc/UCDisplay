@@ -149,7 +149,7 @@ export default function Home() {
             }
 
             { boardState == 1 &&
-              <video className={styles.mainVideo} src="https://pitmslrfogqaymkyfwhd.supabase.co/storage/v1/object/public/main//puc_s2_opening.mp4"
+              <video className={styles.mainVideo} src="https://pitmslrfogqaymkyfwhd.supabase.co/storage/v1/object/public/main//puc_s4_opening.mp4"
                type="video/mp4" muted autoPlay no-controls loop />
             }
 
@@ -160,7 +160,7 @@ export default function Home() {
             }
 
             { boardState == 3 &&
-              <video className={styles.mainVideo} src="https://pitmslrfogqaymkyfwhd.supabase.co/storage/v1/object/public/main//puc_s2_opening.mp4"
+              <video className={styles.mainVideo} src="https://pitmslrfogqaymkyfwhd.supabase.co/storage/v1/object/public/main//puc_s4_opening.mp4"
                type="video/mp4" autoPlay no-controls />
             }
 
